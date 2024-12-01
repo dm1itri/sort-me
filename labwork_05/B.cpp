@@ -48,7 +48,7 @@ Node *RightRotate(Node *node) {
 
 void LevelOrderTraversal(Node *root, bool print = false) {
     int index = 1;
-    auto *last_element = new NodeQueue{nullptr, root};
+    NodeQueue *last_element = new NodeQueue{nullptr, root};
     NodeQueue *first_element = last_element;
     while (first_element != nullptr) {
         if (print) {
