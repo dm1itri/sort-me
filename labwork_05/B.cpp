@@ -15,7 +15,6 @@ struct NodeQueue {
 };
 
 Node *arr_child[200001] = {nullptr};
-int level_size[18] = {0};  // 18 = log(200001) = max_height
 
 int GetMaxHeight(Node *node) {
     if (node == nullptr) return 0;
@@ -45,20 +44,6 @@ Node *RightRotate(Node *node) {
     if (node_copy->right) node_copy->right->parent = node_copy;
 
     return node_copy;
-}
-
-void UpdateKids(Node *node, int level, int level_index) {
-    if (node != nullptr) {
-        if (node->left) {
-            node->kid_l = level + level_size[level_index + 1];
-        }
-        if (node->right) {
-            node->kid_r = level + bool(node->left) + level_size[level_index + 1];
-        }
-        level_size[level_index]++;
-        UpdateKids(node->left, level * 2, level_index + 1);
-        UpdateKids(node->right, level * 2, level_index + 1);
-    }
 }
 
 void LevelOrderTraversal(Node *root, bool print = false) {
