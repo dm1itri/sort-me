@@ -2,18 +2,17 @@
 #include <vector>
 #include <queue>
 
-void bfs(int i, std::vector<int>& visited, const std::vector<std::vector<int>> &graph) {
-    std::queue<int> q;
-    q.push(i);
-    while(!q.empty()) {
-        int current = q.front();
-        q.pop();
-        for (int el: graph[current]){
-            if (visited[el] == -1) {
-                visited[el] = visited[current] + 1;
-                q.push(el);
+void bfs(int v, std::vector<int> &visited, const std::vector<std::vector<int>> &graph) {
+    std::queue<int> queue;
+    queue.push(v);
+    while (!queue.empty()) {
+        int currentVertex = queue.front();
+        queue.pop();
+        for (int vertex : graph[currentVertex])
+            if (visited[vertex] == -1) {
+                visited[vertex] = visited[currentVertex] + 1;
+                queue.push(vertex);
             }
-        }
     }
 }
 
@@ -24,11 +23,11 @@ int main() {
     int N, M, K;
     std::cin >> N >> M >> K;
     std::vector<std::vector<int>> graph(N);
-    for (int ii = 0; ii < M; ii++){
-        int i, j;
-        std::cin >> i >> j;
-        graph[i-1].push_back(j-1);
-        graph[j-1].push_back(i-1);
+    for (int i = 0; i < M; i++) {
+        int vertexFrom, vertexTo;
+        std::cin >> vertexFrom >> vertexTo;
+        graph[vertexFrom - 1].push_back(vertexTo - 1);
+        graph[vertexTo - 1].push_back(vertexFrom - 1);
     }
     std::vector<int> visited(N, -1);
     visited[0] = 0;

@@ -2,23 +2,19 @@
 #include <vector>
 #include <stack>
 
-void dfs(int v, const std::vector<std::vector<int>> &graph, std::vector<bool> &visited, std::stack<int> &stack) {
+void dfs(int v, std::vector<bool> &visited, std::stack<int> &stack, const std::vector<std::vector<int>> &graph) {
     visited[v] = true;
-    for (int vertex : graph[v]) {
-        if (!visited[vertex]) {
-            dfs(vertex, graph, visited, stack);
-        }
-    }
+    for (int vertex : graph[v])
+        if (!visited[vertex])
+            dfs(vertex, visited, stack, graph);
     stack.push(v);
 }
 
-void dfs(int v, const std::vector<std::vector<int>> &graph, std::vector<bool> &visited, std::vector<int> &componentID, int componentCount) {
+void dfs(int v, std::vector<bool> &visited, std::vector<int> &componentID, int componentCount, const std::vector<std::vector<int>> &graph) {
     visited[v] = true;
-    for (int vertex : graph[v]) {
-        if (!visited[vertex]) {
-            dfs(vertex, graph, visited, componentID, componentCount);
-        }
-    }
+    for (int vertex : graph[v])
+        if (!visited[vertex])
+            dfs(vertex, visited, componentID, componentCount, graph);
     componentID[v] = componentCount;
 }
 
@@ -28,39 +24,37 @@ int main() {
 
     int n, m, q;
     std::cin >> n >> m >> q;
-    std::vector<std::vector<int>> graph(n), transposeGraph(n);
+    std::vector<std::vector<int>> graph(n), revGraph(n);
     for (int ii = 0; ii < m; ii++) {
-        int i, j;
-        std::cin >> i >> j;
-        graph[i - 1].push_back(j - 1);
-        transposeGraph[j - 1].push_back(i - 1);
+        int vertexFrom, vertexTo;
+        std::cin >> vertexFrom >> vertexTo;
+        graph[vertexFrom - 1].push_back(vertexTo - 1);
+        revGraph[vertexTo - 1].push_back(vertexFrom - 1);
     }
 
     std::stack<int> stack;
-    std::vector<bool> visited(n, false);
-    for (int vertex = 0; vertex < n; vertex++) {
-        if (!visited[vertex]) {
-            dfs(vertex, graph, visited, stack);
-        }
-    }
+    std::vector<bool> visited(n);
+    for (int vertex = 0; vertex < n; vertex++)
+        if (!visited[vertex])
+            dfs(vertex, visited, stack, graph);
 
-    std::vector<int> componentID(n, -1);
     int componentCount = 0;
+    std::vector<int> componentID(n);
     fill(visited.begin(), visited.end(), false);
 
     while (!stack.empty()) {
         int vertex = stack.top();
         stack.pop();
         if (!visited[vertex]) {
-            dfs(vertex, transposeGraph, visited, componentID, componentCount);
+            dfs(vertex, visited, componentID, componentCount, revGraph);
             componentCount++;
         }
     }
 
     for (int i = 0; i < q; i++) {
-        int a, b;
-        std::cin >> a >> b;
-        if (componentID[a-1] == componentID[b-1])
+        int vertexFrom, vertexTo;
+        std::cin >> vertexFrom >> vertexTo;
+        if (componentID[vertexFrom - 1] == componentID[vertexTo - 1])
             std::cout << "YES\n";
         else
             std::cout << "NO\n";
